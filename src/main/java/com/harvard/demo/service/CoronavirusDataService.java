@@ -1,6 +1,6 @@
 package com.harvard.demo.service;
 
-import com.harvard.demo.entity.LocationStats;
+import com.harvard.demo.entity.CovidData;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,15 @@ public class CoronavirusDataService {
 
     public static final String DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
 
-    public List<LocationStats> fetchData() throws IOException, InterruptedException {
-        List<LocationStats> locationStatsList = new ArrayList<>();
+    public List<CovidData> fetchData() throws IOException, InterruptedException {
+        List<CovidData> locationStatsList = new ArrayList<>();
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(DATA_URL)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         StringReader csvBodyReader = new StringReader(httpResponse.body());
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
         for (CSVRecord record : records) {
-            LocationStats locationStats = new LocationStats();
+            CovidData locationStats = new CovidData();
             locationStats.setState(record.get("Province/State"));
             locationStats.setCountry(record.get("Country/Region"));
             int latestDayCases = Integer.parseInt(record.get(record.size() - 1));
